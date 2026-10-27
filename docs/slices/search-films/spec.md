@@ -33,20 +33,20 @@ List view only (grid arrives with `grid-list-toggle`). The same list renders whe
 - Invalid values never crash the interface; they fall back to "no query" (guardrail 5).
 
 ## Done means
-- [ ] AC-01: With no `q`, all films are shown and the field is empty.
-- [ ] AC-02: Typing narrows the list to films whose title contains the text, ignoring case and accents, in dataset order.
-- [ ] AC-03: The URL's `q` matches the field while typing; clearing the field removes `q`.
-- [ ] AC-04: Loading a URL with `?q=...` shows the field pre-filled and the list already filtered.
-- [ ] AC-05: The result count is visible, correct, and announced to screen readers when it changes.
-- [ ] AC-06: A query with no matches shows the no-results state with a working "Clear search" button, distinct from the empty-dataset state.
-- [ ] AC-07: Whitespace-only, empty, repeated, over-long, special-character and malformed `q` values fall back safely with no crash.
-- [ ] AC-08: The source dataset is not mutated or copied into stored state; the matching rule is a pure function in `view-rules.ts` with its own unit tests.
-- [ ] AC-09: Unrelated URL parameters survive a change to `q`.
-- [ ] AC-10: The search field has a visible label (not placeholder only), is reachable by keyboard with a visible focus ring, and is at least 44px tall.
-- [ ] AC-11: Works from 320px up with no horizontal scroll, in light and dark mode, with AA contrast.
-- [ ] AC-12: films-list behavior is unchanged when there is no query (all its tests still pass).
-- [ ] No future-slice controls (genre, sort, view toggle, selection).
-- [ ] `npm run typecheck`, `npm run lint`, `npm run test`, `npm run build` pass; results reported.
+- [x] AC-01: With no `q`, all films are shown and the field is empty. (`FilmBrowser.test.tsx`, `App.test.tsx`; browser: 8 films, empty field)
+- [x] AC-02: Typing narrows the list to films whose title contains the text, ignoring case and accents, in dataset order. (unit tests in `view-rules.test.ts`; component tests; browser: `mad` gives Mad Max)
+- [x] AC-03: The URL's `q` matches the field while typing; clearing the field removes `q`. (component tests and browser: `?q=mad`, cleared back to no `q`)
+- [x] AC-04: Loading a URL with `?q=...` shows the field pre-filled and the list already filtered. (`App.test.tsx` and `FilmBrowser.test.tsx`; browser: `?q=PARA`)
+- [ ] AC-05: The result count is visible, correct, and announced to screen readers when it changes. (count shown and correct in tests and browser, in a `role="status"` region; **not** yet checked with a real screen reader)
+- [x] AC-06: A query with no matches shows the no-results state with a working "Clear search" button, distinct from the empty-dataset state. (tests; browser: no-results text, "Clear search" via keyboard, focus returns to the field)
+- [x] AC-07: Whitespace-only, empty, repeated, over-long, special-character and malformed `q` values fall back safely with no crash. (`search-query.test.ts`, `FilmBrowser.test.tsx`; browser: malformed and repeated `q`, 100-char limit, no console errors)
+- [x] AC-08: The source dataset is not mutated or copied into stored state; the matching rule is a pure function in `view-rules.ts` with its own unit tests. (`matchesTitle` is pure, tested in `view-rules.test.ts`; frozen films array in tests; no stored copy of the dataset)
+- [x] AC-09: Unrelated URL parameters survive a change to `q`. (tests; browser: `?genre=drama` kept while typing and clearing)
+- [x] AC-10: The search field has a visible label (not placeholder only), is reachable by keyboard with a visible focus ring, and is at least 44px tall. (visible label; focus ring 2px; input and button 44px tall measured; input border 5.86:1 light; Tab reaches the Clear button)
+- [ ] AC-11: Works from 320px up with no horizontal scroll, in light and dark mode, with AA contrast. (checked: 320px dark with no horizontal scroll, desktop light, input border contrast in light; **not** checked: 320px light, tablet, dark contrast numbers)
+- [x] AC-12: films-list behavior is unchanged when there is no query (all its tests still pass). (existing `FilmList` and `App` tests pass unchanged)
+- [x] No future-slice controls (genre, sort, view toggle, selection). (browser)
+- [x] `npm run typecheck`, `npm run lint`, `npm run test`, `npm run build` pass; results reported. (all pass: 46 tests)
 
 ## Decisions
 - Matching: case-insensitive "contains" on the title, with accent folding (`amelie` matches `Amélie`). Covered by a unit test even though no current title needs it.

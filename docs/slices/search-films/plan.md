@@ -6,11 +6,12 @@
 - `src/features/films/search-query.ts`: reads and writes the `q` URL parameter; validates and clamps the raw value (first value, trimmed length limit, safe fallback), preserves other parameters. Boundary code kept apart from the pure matching rule.
 - `src/features/films/search-query.test.ts`: tests for parsing and writing (empty, whitespace, repeated, long, malformed, other params preserved).
 - `src/features/films/components/SearchField.tsx`: labelled search input, 44px target, focus ring.
-- `src/features/films/components/SearchStatus.tsx`: result count in a polite live region, and the no-results message with its "Clear search" button.
-- `src/features/films/components/SearchField.test.tsx` and `SearchStatus.test.tsx`: behavior tests via Testing Library.
+- `src/features/films/components/SearchStatus.tsx`: exports `ResultCount` (polite live region) and `NoResults` (message and "Clear search" button).
+- `src/features/films/components/FilmBrowser.tsx`: container that wires the hook, search field, count, no-results state and `FilmList`, and hides the search controls for an empty dataset. Added so `App.tsx` stays thin and the empty-dataset case can be tested with a prop.
+- `src/features/films/components/FilmBrowser.test.tsx`: behavior tests via Testing Library for the whole search flow (replaces separate `SearchField` and `SearchStatus` test files).
 
 ## Files to change
-- `src/App.tsx`: owned by `films-list`. Reads `q` from the URL, derives the visible films from `films` and `q`, renders the search field, count/no-results, and `FilmList`. Must stay a thin shell, so URL read/write logic lives in `search-query.ts`.
+- `src/App.tsx`: owned by `films-list`. Renders `FilmBrowser` in place of `FilmList`. URL read/write and derivation live in `useFilmSearch` in `search-query.ts`, called from `FilmBrowser`.
 - `src/App.test.tsx`: owned by `films-list`. Add cases for a pre-filled `?q=`, typing, and no results. The existing "renders every film" case must still pass unchanged (AC-12).
 - `docs/slices/search-films/*` (these files).
 
