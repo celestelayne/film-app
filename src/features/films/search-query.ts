@@ -2,7 +2,7 @@ import { useCallback, useSyncExternalStore } from 'react'
 import type { Film } from './types'
 import { matchesTitle } from './view-rules'
 
-const MAX_QUERY_LENGTH = 50
+const MAX_QUERY_LENGTH = 100
 
 export function parseSearchQuery(search: string): string {
   const raw = new URLSearchParams(search).get('q') ?? ''
