@@ -36,7 +36,8 @@
 ## Decisions
 - No new dependency. Interaction tests use `fireEvent` from `@testing-library/react`; revisit `@testing-library/user-event` only if that proves inadequate, and ask first.
 - URL state uses `window.location`, `URLSearchParams` and `history.replaceState`. No router library.
-- The URL read/write and the derivation of visible films live in a short hook in `search-query.ts`, called from `App.tsx`, so `App.tsx` stays thin.
+- The URL read/write and the derivation of visible films live in a short hook, `useFilmSearch` in `search-query.ts`, called from `FilmBrowser`, so `App.tsx` stays thin. The hook keeps the typed text in local state and mirrors it to the URL with a 250 ms debounce (revised from per-keystroke writes after review).
+- Component tests use fake timers to cover the debounce, flush on unmount, `popstate`, preserved history state and hash, and a refused `replaceState`.
 
 ## Open questions
 - None.

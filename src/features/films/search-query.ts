@@ -1,17 +1,19 @@
-import { useCallback, useSyncExternalStore } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Film } from './types'
 import { matchesTitle } from './view-rules'
 
 const MAX_QUERY_LENGTH = 100
+const URL_WRITE_DELAY_MS = 250
+
+const clamp = (query: string) => [...query].slice(0, MAX_QUERY_LENGTH).join('')
 
 export function parseSearchQuery(search: string): string {
-  const raw = new URLSearchParams(search).get('q') ?? ''
-  return [...raw].slice(0, MAX_QUERY_LENGTH).join('')
+  return clamp(new URLSearchParams(search).get('q') ?? '')
 }
 
 export function buildSearchString(search: string, query: string): string {
   const params = new URLSearchParams(search)
-  const value = [...query].slice(0, MAX_QUERY_LENGTH).join('')
+  const value = clamp(query)
   if (value === '') {
     params.delete('q')
   } else {
@@ -21,28 +23,60 @@ export function buildSearchString(search: string, query: string): string {
   return next ? `?${next}` : ''
 }
 
-const listeners = new Set<() => void>()
-
-function subscribe(listener: () => void) {
-  listeners.add(listener)
-  window.addEventListener('popstate', listener)
-  return () => {
-    listeners.delete(listener)
-    window.removeEventListener('popstate', listener)
+function writeQueryToUrl(query: string) {
+  const { pathname, search, hash } = window.location
+  try {
+    window.history.replaceState(
+      window.history.state,
+      '',
+      `${pathname}${buildSearchString(search, query)}${hash}`,
+    )
+  } catch {
+    // The URL is a best-effort mirror of the field: browsers can refuse or throttle
+    // history updates, and typing must keep working from local state when they do.
   }
 }
 
-const getSearch = () => window.location.search
-
 export function useFilmSearch(films: readonly Film[]) {
-  const search = useSyncExternalStore(subscribe, getSearch)
-  const query = parseSearchQuery(search)
+  const [query, setDraft] = useState(() => parseSearchQuery(window.location.search))
+  const timer = useRef<number | undefined>(undefined)
+  const latest = useRef(query)
 
-  const setQuery = useCallback((next: string) => {
-    const { pathname, search: current, hash } = window.location
-    window.history.replaceState(null, '', `${pathname}${buildSearchString(current, next)}${hash}`)
-    listeners.forEach((listener) => listener())
+  const cancelPendingWrite = useCallback(() => {
+    window.clearTimeout(timer.current)
+    timer.current = undefined
   }, [])
+
+  const setQuery = useCallback(
+    (next: string) => {
+      const value = clamp(next)
+      latest.current = value
+      setDraft(value)
+      cancelPendingWrite()
+      timer.current = window.setTimeout(() => {
+        timer.current = undefined
+        writeQueryToUrl(value)
+      }, URL_WRITE_DELAY_MS)
+    },
+    [cancelPendingWrite],
+  )
+
+  useEffect(() => {
+    const syncFromUrl = () => {
+      cancelPendingWrite()
+      const fromUrl = parseSearchQuery(window.location.search)
+      latest.current = fromUrl
+      setDraft(fromUrl)
+    }
+    window.addEventListener('popstate', syncFromUrl)
+    return () => {
+      window.removeEventListener('popstate', syncFromUrl)
+      if (timer.current !== undefined) {
+        cancelPendingWrite()
+        writeQueryToUrl(latest.current)
+      }
+    }
+  }, [cancelPendingWrite])
 
   const visibleFilms = films.filter((film) => matchesTitle(film, query))
 
