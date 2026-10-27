@@ -1,7 +1,7 @@
-import { filmsSchema } from '../types'
+import { parseFilms } from '../types'
 
 // Validated when this module loads: invalid starter data throws and names the offending entry.
-export const films = filmsSchema.parse([
+export const films = parseFilms([
   {
     id: 'parasite',
     title: 'Parasite',

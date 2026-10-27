@@ -47,7 +47,7 @@ List only: a single-column, semantic list (`ul`/`li`). No grid. `view-rules.ts` 
 - [x] AC-06: Page has an `h1`; films are in a semantic list; the list is announced as a list with the right item count by a screen reader.
 - [x] AC-07: Films appear after refresh with no network request for film data. (`App.test.tsx` renders synchronously from the static import)
 - [x] AC-08: No search, filter, sort, toggle, selection or edit controls exist; no URL or storage code was added. (browser; no focusable elements)
-- [ ] Meets AGENTS.md interface quality (not fully verified: light mode contrast calculated at about 5.8:1, not seen rendered; no focusable elements to test): AA contrast in light and dark, visible focus on anything focusable, reduced-motion respected, color never the only signal, theme tokens only.
+- [x] Meets AGENTS.md interface quality: AA contrast in light and dark, visible focus on anything focusable, reduced-motion respected, color never the only signal, theme tokens only. (text contrast measured in browser: muted 5.86:1 light, 6.09:1 dark; title/body 17.6:1 light, 17.0:1 dark; no focusable elements or motion; card borders are decorative at about 1.3:1 and carry no information)
 - [x] `npm run typecheck`, `npm run lint`, `npm run test` pass; results reported.
 - [ ] Empty-dataset, missing-metadata and invalid-data behavior verified. (empty and missing covered by tests; invalid data covered by schema tests only, not exercised in the running app)
 

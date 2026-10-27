@@ -29,3 +29,11 @@ export const filmsSchema = z.array(filmSchema).superRefine((films, ctx) => {
 })
 
 export type Film = z.infer<typeof filmSchema>
+
+export function parseFilms(data: unknown): Film[] {
+  const result = filmsSchema.safeParse(data)
+  if (!result.success) {
+    throw new Error(`Invalid film data\n${z.prettifyError(result.error)}`)
+  }
+  return result.data
+}
