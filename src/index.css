@@ -1,16 +1,38 @@
 @import "tailwindcss";
 
+/* color — semantic, not primitive. Plain variables so the dark override can sit in a media query. */
+:root {
+  color-scheme: light dark;
+
+  --bg:       oklch(0.99 0 0);
+  --fg:       oklch(0.20 0 0);
+  --muted-fg: oklch(0.50 0 0);
+  --border:   oklch(0.90 0 0);
+  --accent:   oklch(0.55 0.15 250);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:       oklch(0.15 0 0);
+    --fg:       oklch(0.95 0 0);
+    --muted-fg: oklch(0.65 0 0);
+    --border:   oklch(0.30 0 0);
+    --accent:   oklch(0.75 0.12 250);
+  }
+}
+
+@theme inline {
+  --color-bg:       var(--bg);
+  --color-fg:       var(--fg);
+  --color-muted-fg: var(--muted-fg);
+  --color-border:   var(--border);
+  --color-accent:   var(--accent);
+}
+
 @theme {
   /* type */
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
-
-  /* color — semantic, not primitive */
-  --color-bg:        oklch(0.99 0 0);
-  --color-fg:        oklch(0.20 0 0);
-  --color-muted-fg:  oklch(0.50 0 0);
-  --color-border:    oklch(0.90 0 0);
-  --color-accent:    oklch(0.55 0.15 250);
 
   /* shape */
   --radius-control: 0.375rem;
@@ -19,14 +41,4 @@
   /* motion */
   --duration-fast:  120ms;
   --ease-standard:  cubic-bezier(0.2, 0, 0, 1);
-}
-
-@media (prefers-color-scheme: dark) {
-  @theme {
-    --color-bg:       oklch(0.15 0 0);
-    --color-fg:       oklch(0.95 0 0);
-    --color-muted-fg: oklch(0.65 0 0);
-    --color-border:   oklch(0.30 0 0);
-    --color-accent:   oklch(0.75 0.12 250);
-  }
 }
