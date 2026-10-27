@@ -38,23 +38,24 @@ List only: a single-column, semantic list (`ul`/`li`). No grid. `view-rules.ts` 
 - No URL or storage failure modes exist in this slice.
 
 ## Done means
-- [ ] AC-01: Every film in the dataset renders.
-- [ ] AC-02: Each film shows its title and its available metadata.
-- [ ] AC-03: Readable from 320px up with no horizontal scroll at 320px, tablet and desktop.
-- [ ] AC-04: Films with missing optional metadata (including actors and description) render with no placeholder text, broken layout or runtime error.
-- [ ] Long description and long actor lists wrap and stay readable at 320px.
-- [ ] AC-05: An empty dataset shows the empty state.
-- [ ] AC-06: Page has an `h1`; films are in a semantic list; the list is announced as a list with the right item count by a screen reader.
-- [ ] AC-07: Films appear after refresh with no network request for film data.
-- [ ] AC-08: No search, filter, sort, toggle, selection or edit controls exist; no URL or storage code was added.
-- [ ] Meets AGENTS.md interface quality: AA contrast in light and dark, visible focus on anything focusable, reduced-motion respected, color never the only signal, theme tokens only.
-- [ ] `npm run typecheck`, `npm run lint`, `npm run test` pass; results reported.
-- [ ] Empty-dataset, missing-metadata and invalid-data behavior verified.
+- [x] AC-01: Every film in the dataset renders. (`App.test.tsx`; browser: 8 items)
+- [x] AC-02: Each film shows its title and its available metadata. (`FilmList.test.tsx`)
+- [x] AC-03: Readable from 320px up with no horizontal scroll at 320px, tablet and desktop. (320px and desktop checked in browser; tablet checked by user)
+- [x] AC-04: Films with missing optional metadata (including actors and description) render with no placeholder text, broken layout or runtime error. (`FilmList.test.tsx`; browser)
+- [x] Long description and long actor lists wrap and stay readable at 320px. (browser)
+- [x] AC-05: An empty dataset shows the empty state. (`FilmList.test.tsx`)
+- [x] AC-06: Page has an `h1`; films are in a semantic list; the list is announced as a list with the right item count by a screen reader.
+- [x] AC-07: Films appear after refresh with no network request for film data. (`App.test.tsx` renders synchronously from the static import)
+- [x] AC-08: No search, filter, sort, toggle, selection or edit controls exist; no URL or storage code was added. (browser; no focusable elements)
+- [ ] Meets AGENTS.md interface quality (not fully verified: light mode contrast calculated at about 5.8:1, not seen rendered; no focusable elements to test): AA contrast in light and dark, visible focus on anything focusable, reduced-motion respected, color never the only signal, theme tokens only.
+- [x] `npm run typecheck`, `npm run lint`, `npm run test` pass; results reported.
+- [ ] Empty-dataset, missing-metadata and invalid-data behavior verified. (empty and missing covered by tests; invalid data covered by schema tests only, not exercised in the running app)
 
 ## Decisions
 - Dataset: 8 real films; 3 of them each omit a different optional field. Every film has `id` and `title`.
 - Invalid starter data: validation runs once when `films.ts` is first imported; if any entry fails the schema or an `id` is duplicated, it throws an error naming the entry. The app does not start with bad data.
 - `description` is shown in full, not clamped.
+- Empty-state text is "No films in your watchlist yet." Runtime is shown as "142 min"; genres and actors as comma-separated text.
 
 ## Open questions
-- Empty-state wording and display format for runtime (e.g. "142 min"), genres and actors. Proposal: "No films in your watchlist yet." and comma-separated text.
+- None.

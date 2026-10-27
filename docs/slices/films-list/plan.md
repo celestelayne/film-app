@@ -5,7 +5,8 @@
 - `src/features/films/data/films.ts`: local starter dataset, parsed with the zod schema at load (also checks unique ids).
 - `src/features/films/components/FilmList.tsx`: renders `films` prop as a semantic list, plus the empty state.
 - `src/features/films/components/FilmList.test.tsx`: behavior tests for AC-01, 02, 04, 05, 06, 07.
-- `src/features/films/data/films.test.ts`: schema accepts the dataset, rejects invalid entries and duplicate ids.
+- `src/features/films/data/films.test.ts`: schema tests for invalid entries, empty fields and duplicate ids (names the duplicated id).
+- `src/App.test.tsx`: renders `App` synchronously and checks every film in the dataset appears (AC-07).
 - `src/test/setup.ts`: registers jest-dom matchers and RTL cleanup.
 
 ## Files to change
@@ -22,7 +23,7 @@
 ## Dependencies (approved)
 - `zod` (runtime): data validation at the loading boundary.
 - Dev: `jsdom`, `@testing-library/react`, `@testing-library/jest-dom`. `@testing-library/dom` is a peer of RTL and installed with it if required. Chosen as the standard Vitest + React pairing; `user-event` is deliberately omitted because this slice has no interaction. Add it in the first slice that needs it.
-- Install exact current versions via `npm install` and confirm `npm run typecheck`, `lint`, `test` and `build` still pass before writing feature code.
+- Installed with `npm install`; `typecheck`, `lint`, `test` and `build` pass.
 
 ## Sequence
 0. Install dependencies, add the vitest `test` config and `src/test/setup.ts`; confirm baseline checks still pass.
@@ -35,6 +36,4 @@
 7. Verify: typecheck, lint, test, browser at 320px and desktop in light and dark, keyboard, and the Done means list.
 
 ## Open questions
-- Exact installed versions of the new packages (verify compatibility with Vitest 5 and React 19 at install time; report any peer-dependency problems rather than forcing them).
-- Whether the `test` block goes in `vite.config.ts` or a separate `vitest.config.ts`. Proposal: `vite.config.ts`, to keep one config.
-- Whether `tsc --noEmit` covers `src/**/*.test.tsx` (it does via `tsconfig.app.json` `include: ["src"]`); jest-dom matcher types come from importing `@testing-library/jest-dom/vitest` in the setup file. Confirm this typechecks during step 0.
+- None. Resolved: versions are recorded in `package.json`; the `test` block lives in `vite.config.ts`; test files typecheck under `tsc -b` (part of `npm run build`).

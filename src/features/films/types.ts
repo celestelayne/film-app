@@ -14,9 +14,18 @@ export const filmSchema = z.object({
   description: text.optional(),
 })
 
-export const filmsSchema = z.array(filmSchema).refine(
-  (films) => new Set(films.map((film) => film.id)).size === films.length,
-  { message: 'Film ids must be unique' },
-)
+export const filmsSchema = z.array(filmSchema).superRefine((films, ctx) => {
+  const seen = new Set<string>()
+  films.forEach((film, index) => {
+    if (seen.has(film.id)) {
+      ctx.addIssue({
+        code: 'custom',
+        message: `Duplicate film id: "${film.id}"`,
+        path: [index, 'id'],
+      })
+    }
+    seen.add(film.id)
+  })
+})
 
 export type Film = z.infer<typeof filmSchema>

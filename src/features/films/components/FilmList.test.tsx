@@ -1,5 +1,5 @@
 import { render, screen, within } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import FilmList from './FilmList'
 import type { Film } from '../types'
 
@@ -48,13 +48,5 @@ describe('FilmList', () => {
     render(<FilmList films={[]} />)
     expect(screen.getByText('No films in your watchlist yet.')).toBeInTheDocument()
     expect(screen.queryByRole('list')).not.toBeInTheDocument()
-  })
-
-  it('does not request film data over the network', () => {
-    const fetchSpy = vi.fn()
-    vi.stubGlobal('fetch', fetchSpy)
-    render(<FilmList films={[full]} />)
-    expect(fetchSpy).not.toHaveBeenCalled()
-    vi.unstubAllGlobals()
   })
 })
